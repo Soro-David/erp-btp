@@ -1,0 +1,83 @@
+services:
+  # ============================================================================
+  # 1. Base de données PostgreSQL
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: btp_postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-btp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-btp_password_dev_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-btp_manager}
+    ports:
+      - "${POSTGRES_HOST_PORT:-5434}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-btp_user} -d $${POSTGRES_DB:-btp_manager}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - btp-network
+
+  # ============================================================================
+  # 2. Backend FastAPI (Python 3.12)
+  # ============================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: btp_backend_api
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-btp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-btp_password_dev_2026}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-btp_manager}
+      SECRET_KEY: ${SECRET_KEY:-btp_manager_secret_key_change_in_production_32chars_min!}
+      ALGORITHM: ${ALGORITHM:-HS256}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-1440}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - btp-network
+
+  # ============================================================================
+  # 3. Frontend Vue.js 3 (Vite + Pinia)
+  # ============================================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: btp_frontend_app
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000/api/v1}
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - btp-network
+
+networks:
+  btp-network:
+    driver: bridge
+    name: btp_manager_network
+
+volumes:
+  postgres_data:
+    name: btp_postgres_data
