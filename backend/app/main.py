@@ -62,3 +62,9 @@ def health_check(db: Session = Depends(get_db)):
                 "error": str(e),
             },
         }
+
+
+from app.api.v1.router import api_router
+
+# Enregistrement des routes API v1 (Auth, SuperAdmin, Owner, Director, Manager, Worker)
+app.include_router(api_router, prefix=settings.API_V1_STR)
