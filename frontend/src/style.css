@@ -1,45 +1,33 @@
-:root {
-  --bg-main: #0b0f17;
-  --bg-card: #131b2e;
-  --bg-card-hover: #1a243d;
-  --border-color: #1e2d4a;
-  --border-highlight: #2a3d66;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-
-  --accent-btp: #f59e0b;
-  --accent-btp-glow: rgba(245, 158, 11, 0.25);
-
-  --status-success: #10b981;
-  --status-success-bg: rgba(16, 185, 129, 0.15);
-  --status-warning: #f59e0b;
-  --status-error: #ef4444;
-  --status-error-bg: rgba(239, 68, 68, 0.15);
-
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+@layer base {
+  body {
+    background-color: #0b0f17;
+    background-image: radial-gradient(circle at 50% 0%, #17233f 0%, #0b0f17 75%);
+    min-height: 100vh;
+    color: #f8fafc;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Utilitaires et scrollbar douce */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-body {
-  font-family: var(--font-sans);
-  background: radial-gradient(circle at 50% 0%, #17233f 0%, var(--bg-main) 70%);
-  color: var(--text-primary);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  -webkit-font-smoothing: antialiased;
+::-webkit-scrollbar-track {
+  background: #0b0f17;
 }
 
-#app {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+::-webkit-scrollbar-thumb {
+  background: #1e2d4a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f59e0b;
 }
