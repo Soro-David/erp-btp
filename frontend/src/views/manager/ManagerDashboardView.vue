@@ -1,60 +1,76 @@
 <template>
-  <div class="role-view">
-    <div class="role-header">
-      <div class="badge-role">📋 ESPACE MANAGER — CONDUCTEUR DE TRAVAUX & CHEF DE PROJET</div>
-      <h2>Pilotage Opérationnel des Chantiers</h2>
-      <p>Suivi des plannings, commandes de matériaux, contrôle des tâches et attachements</p>
-    </div>
-
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <span class="kpi-title">Mes Chantiers Assignés</span>
-        <span class="kpi-value">3 Projets</span>
-        <span class="kpi-sub">École Bingerville • Immeuble Cocody • Voie Yopougon</span>
-      </div>
-      <div class="kpi-card">
-        <span class="kpi-title">Tâches en Cours</span>
-        <span class="kpi-value">24 Tâches</span>
-        <span class="kpi-sub highlight">3 en retard de planning</span>
-      </div>
-      <div class="kpi-card">
-        <span class="kpi-title">Demandes d'Achat</span>
-        <span class="kpi-value">6 en Attente</span>
-        <span class="kpi-sub">Ciment, fers à béton, gravier</span>
-      </div>
-      <div class="kpi-card">
-        <span class="kpi-title">Prochaine Situation</span>
-        <span class="kpi-value">Situation N° 4</span>
-        <span class="kpi-sub success">Clôture fin de quinzaine</span>
+  <div class="space-y-6">
+    <!-- En-tête Espace Manager -->
+    <div class="bg-dark-800/80 p-5 rounded-2xl border border-dark-600 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold mb-1">
+          <span>📋</span>
+          <span>CONDUITE DE TRAVAUX</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Pilotage Opérationnel des Chantiers</h2>
+        <p class="text-slate-400 text-xs sm:text-sm mt-0.5">Suivi des plannings, commandes de matériaux, contrôle des tâches et attachements</p>
       </div>
     </div>
 
-    <div class="info-box">
-      <h3>🛠️ Outils Conduite de Travaux</h3>
-      <ul>
-        <li>📐 <strong>Phases & Tâches</strong> : Découpage WBS du chantier (Fondations, Gros Œuvre, Second Œuvre, Finitions).</li>
-        <li>📦 <strong>Approvisionnements & Stocks</strong> : Émission des bons de commande et réceptions sur site.</li>
-        <li>📈 <strong>Avancement Pondéré</strong> : Calcul précis basé sur les métrés réels constatés par les chefs de chantier.</li>
-        <li>📑 <strong>Préparation des Situations</strong> : Génération automatique des propositions de situations pour le client.</li>
-      </ul>
+    <!-- Grille KPI Manager Responsive -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl p-5 shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Chantiers Assignés</div>
+        <div class="text-2xl sm:text-3xl font-black text-white">3 Projets</div>
+        <div class="text-xs text-blue-300 mt-2 truncate" title="École Bingerville, Immeuble Cocody, Voie Yopougon">
+          Bingerville • Cocody • Yopougon
+        </div>
+      </div>
+
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl p-5 shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Tâches en Cours</div>
+        <div class="text-2xl sm:text-3xl font-black text-white">24 Tâches</div>
+        <div class="text-xs text-amber-400 mt-2">
+          3 avec alerte de délai
+        </div>
+      </div>
+
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl p-5 shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Demandes d'Achat</div>
+        <div class="text-2xl sm:text-3xl font-black text-btp-400">6 En Attente</div>
+        <div class="text-xs text-slate-400 mt-2">
+          Ciment CPJ, fers HA, gravier
+        </div>
+      </div>
+
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl p-5 shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Échéance Situation</div>
+        <div class="text-2xl sm:text-3xl font-black text-emerald-400">Situation N° 4</div>
+        <div class="text-xs text-slate-400 mt-2">
+          Fin de période dans 4 jours
+        </div>
+      </div>
+    </div>
+
+    <!-- Outils Conduite de Travaux -->
+    <div class="bg-dark-800 border border-dark-600 rounded-2xl p-6 shadow-xl">
+      <h3 class="text-base sm:text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <span>🛠️</span>
+        <span>Outils de Gestion de Projet BTP</span>
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 rounded-xl bg-dark-900/60 border border-dark-600">
+          <div class="font-bold text-white text-sm mb-1">📐 Découpage WBS (Phases & Tâches)</div>
+          <p class="text-xs text-slate-400">Suivi structuré : Terrassement, Fondations, Gros Œuvre, Cloisonnement, Réseaux et Finitions.</p>
+        </div>
+        <div class="p-4 rounded-xl bg-dark-900/60 border border-dark-600">
+          <div class="font-bold text-white text-sm mb-1">📦 Approvisionnements & Réceptions</div>
+          <p class="text-xs text-slate-400">Bons de commande fournisseurs, contrôle quantitatif à la livraison et vérification de conformité.</p>
+        </div>
+        <div class="p-4 rounded-xl bg-dark-900/60 border border-dark-600">
+          <div class="font-bold text-white text-sm mb-1">📈 Calcul d'Avancement Pondéré</div>
+          <p class="text-xs text-slate-400">Consolidation automatique de l'avancement physique basée sur les quantités réalisées sur le terrain.</p>
+        </div>
+        <div class="p-4 rounded-xl bg-dark-900/60 border border-dark-600">
+          <div class="font-bold text-white text-sm mb-1">📑 Projet de Situation de Travaux</div>
+          <p class="text-xs text-slate-400">Compilation des attachements pour transmission à la direction et au bureau de contrôle (BCT).</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.role-view { display: flex; flex-direction: column; gap: 2rem; }
-.role-header h2 { font-size: 1.8rem; color: #fff; margin: 0.4rem 0; }
-.role-header p { color: var(--text-secondary); }
-.badge-role { display: inline-block; padding: 0.3rem 0.8rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 9999px; font-size: 0.75rem; font-weight: 700; }
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
-.kpi-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
-.kpi-title { font-size: 0.85rem; color: var(--text-secondary); }
-.kpi-value { font-size: 1.5rem; font-weight: 800; color: #fff; }
-.kpi-sub { font-size: 0.8rem; color: var(--text-muted); }
-.kpi-sub.highlight { color: #f59e0b; }
-.kpi-sub.success { color: var(--status-success); }
-.info-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 2rem; }
-.info-box h3 { color: #fff; margin-bottom: 1.2rem; font-size: 1.1rem; }
-.info-box ul { display: flex; flex-direction: column; gap: 0.9rem; list-style: none; color: var(--text-secondary); }
-.info-box li strong { color: #fff; }
-</style>

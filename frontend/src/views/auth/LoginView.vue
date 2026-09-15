@@ -1,81 +1,106 @@
 <template>
-  <div class="login-page">
-    <div class="login-card">
-      <div class="login-header">
-        <div class="brand-badge">🏗️ BTP MANAGER</div>
-        <h2>Connexion ERP</h2>
-        <p>Accédez à votre espace selon votre rôle et vos habilitations</p>
+  <div class="flex items-center justify-center min-h-[calc(100vh-12rem)] py-6 sm:py-12">
+    <div class="w-full max-w-md bg-dark-800 border border-dark-600 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-black/60 relative overflow-hidden">
+      <!-- Lueur décorative BTP -->
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-btp-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- En-tête -->
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-btp-500/10 border border-btp-500/30 text-btp-400 text-xs font-bold mb-3">
+          <span>🏗️</span>
+          <span>BTP MANAGER</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Connexion ERP</h2>
+        <p class="text-slate-400 text-sm mt-1">Accédez à votre espace selon votre profil d'habilitation</p>
       </div>
 
-      <div v-if="authStore.error" class="alert-error">
-        ⚠️ {{ authStore.error }}
+      <!-- Message d'alerte d'erreur -->
+      <div v-if="authStore.error" class="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs sm:text-sm flex items-start gap-2">
+        <span class="text-base">⚠️</span>
+        <span>{{ authStore.error }}</span>
       </div>
 
-      <form @submit.prevent="handleLogin" class="login-form">
-        <div class="form-group">
-          <label for="email">Adresse Email</label>
+      <!-- Formulaire de connexion -->
+      <form @submit.prevent="handleLogin" class="space-y-4">
+        <div>
+          <label for="email" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            Adresse Email
+          </label>
           <input 
             id="email"
             v-model="email" 
             type="email" 
             required 
-            placeholder="ex: admin@gmail.com"
+            placeholder="admin@gmail.com"
+            class="w-full px-4 py-2.5 rounded-xl bg-dark-900/80 border border-dark-600 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-btp-500 focus:ring-1 focus:ring-btp-500 transition-all"
           />
         </div>
 
-        <div class="form-group">
-          <label for="password">Mot de passe</label>
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="password" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Mot de passe
+            </label>
+          </div>
           <input 
             id="password"
             v-model="password" 
             type="password" 
             required 
             placeholder="••••••••"
+            class="w-full px-4 py-2.5 rounded-xl bg-dark-900/80 border border-dark-600 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-btp-500 focus:ring-1 focus:ring-btp-500 transition-all"
           />
         </div>
 
-        <button type="submit" class="btn-submit" :disabled="authStore.loading">
-          <span>{{ authStore.loading ? 'Vérification...' : 'Se connecter' }}</span>
+        <button 
+          type="submit" 
+          :disabled="authStore.loading"
+          class="w-full mt-2 py-3 px-4 rounded-xl bg-gradient-to-r from-btp-500 to-btp-600 hover:from-btp-400 hover:to-btp-500 text-slate-950 font-bold text-sm sm:text-base shadow-lg shadow-btp-500/25 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          <span v-if="authStore.loading" class="animate-spin text-lg">⏳</span>
+          <span>{{ authStore.loading ? 'Authentification...' : 'Se connecter' }}</span>
           <span v-if="!authStore.loading">➔</span>
         </button>
       </form>
 
-      <!-- Raccourcis de test pour la démo -->
-      <div class="quick-credentials">
-        <div class="quick-title">Comptes de test pré-configurés :</div>
-        <div class="chips-container">
+      <!-- Raccourcis de test prédéfinis -->
+      <div class="mt-6 pt-5 border-t border-dark-600">
+        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5">
+          Comptes de test (cliquez pour remplir) :
+        </div>
+        <div class="flex flex-wrap gap-1.5">
           <button 
             type="button" 
-            class="chip chip-admin" 
             @click="fillCreds('admin@gmail.com', 'Password@1234')"
+            class="px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-medium hover:bg-red-500/20 transition-all"
           >
             👑 SuperAdmin
           </button>
           <button 
             type="button" 
-            class="chip chip-owner" 
             @click="fillCreds('owner@btp.ci', 'Password@1234')"
+            class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium hover:bg-amber-500/20 transition-all"
           >
             🏢 Owner
           </button>
           <button 
             type="button" 
-            class="chip chip-director" 
             @click="fillCreds('director@btp.ci', 'Password@1234')"
+            class="px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-medium hover:bg-purple-500/20 transition-all"
           >
             📐 Director
           </button>
           <button 
             type="button" 
-            class="chip chip-manager" 
             @click="fillCreds('manager@btp.ci', 'Password@1234')"
+            class="px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs font-medium hover:bg-blue-500/20 transition-all"
           >
             📋 Manager
           </button>
           <button 
             type="button" 
-            class="chip chip-worker" 
             @click="fillCreds('worker@btp.ci', 'Password@1234')"
+            class="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-medium hover:bg-emerald-500/20 transition-all"
           >
             👷 Worker
           </button>
@@ -104,7 +129,6 @@ function fillCreds(e, p) {
 async function handleLogin() {
   try {
     await authStore.login(email.value, password.value)
-    // Redirection selon le rôle
     const role = authStore.userRole
     if (role === 'SUPER_ADMIN') router.push('/superadmin/users')
     else if (role === 'OWNER') router.push('/owner')
@@ -113,163 +137,7 @@ async function handleLogin() {
     else if (role === 'WORKER') router.push('/worker')
     else router.push('/')
   } catch (err) {
-    // Erreur gérée dans le store
+    // Erreur affichée via store
   }
 }
 </script>
-
-<style scoped>
-.login-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 160px);
-  padding: 2rem;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 440px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 18px;
-  padding: 2.5rem;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.brand-badge {
-  display: inline-block;
-  padding: 0.35rem 0.85rem;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid var(--accent-btp-glow);
-  color: var(--accent-btp);
-  border-radius: 9999px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  margin-bottom: 0.8rem;
-}
-
-.login-header h2 {
-  font-size: 1.8rem;
-  color: #fff;
-  margin-bottom: 0.4rem;
-}
-
-.login-header p {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.alert-error {
-  background: var(--status-error-bg);
-  border: 1px solid var(--status-error);
-  color: #fca5a5;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-size: 0.88rem;
-  margin-bottom: 1.5rem;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.form-group input {
-  background: rgba(11, 15, 23, 0.8);
-  border: 1px solid var(--border-color);
-  color: #fff;
-  padding: 0.85rem 1rem;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-  border-color: var(--accent-btp);
-  box-shadow: 0 0 0 3px var(--accent-btp-glow);
-}
-
-.btn-submit {
-  background: linear-gradient(135deg, var(--accent-btp) 0%, #d97706 100%);
-  color: #0f172a;
-  border: none;
-  padding: 0.95rem;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  margin-top: 0.5rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px var(--accent-btp-glow);
-}
-
-.btn-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.quick-credentials {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.quick-title {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-bottom: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.chips-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.chip {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  padding: 0.35rem 0.65rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.chip:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-color: var(--border-highlight);
-}
-</style>

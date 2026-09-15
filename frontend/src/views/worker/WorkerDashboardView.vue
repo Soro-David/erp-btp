@@ -1,59 +1,88 @@
 <template>
-  <div class="role-view">
-    <div class="role-header">
-      <div class="badge-role">👷 ESPACE WORKER — CHEF DE CHANTIER & TERRAIN</div>
-      <h2>Saisie & Rapports de Chantier Quotidiens</h2>
-      <p>Pointage ouvriers, saisie des quantités produites et consommation des matériaux</p>
-    </div>
-
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <span class="kpi-title">Mon Chantier Aujourd'hui</span>
-        <span class="kpi-value">Chantier Cocody</span>
-        <span class="kpi-sub">Phase : Gros Œuvre - R+2</span>
+  <div class="space-y-6">
+    <!-- En-tête Espace Worker (Mobile-first) -->
+    <div class="bg-dark-800/80 p-5 rounded-2xl border border-dark-600 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-1">
+          <span>👷</span>
+          <span>CHEF DE CHANTIER / TERRAIN</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Saisie & Suivi Quotidien</h2>
+        <p class="text-slate-400 text-xs sm:text-sm mt-0.5">Pointage ouvriers, avancement métré et bons de sortie matériaux</p>
       </div>
-      <div class="kpi-card">
-        <span class="kpi-title">Effectif sur Site</span>
-        <span class="kpi-value">28 Ouvriers</span>
-        <span class="kpi-sub success">Pointage du matin validé</span>
-      </div>
-      <div class="kpi-card">
-        <span class="kpi-title">Béton Coulé ce jour</span>
-        <span class="kpi-value">45 m³</span>
-        <span class="kpi-sub">Dalle supérieure</span>
-      </div>
-      <div class="kpi-card">
-        <span class="kpi-title">Consommation Ciment</span>
-        <span class="kpi-value">120 Sacs CPJ 42.5</span>
-        <span class="kpi-sub">Stock restant : 350 sacs</span>
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Chantier Cocody R+2 Actif</span>
       </div>
     </div>
 
-    <div class="info-box">
-      <h3>📱 Outils de Saisie Mobile & Terrain</h3>
-      <ul>
-        <li>⏱️ <strong>Pointage d'Équipe</strong> : Enregistrement rapide des heures de présence, maçons, ferrailleurs, coffreurs.</li>
-        <li>🧱 <strong>Bons de Sortie Matériaux</strong> : Sortie de fer à béton, sacs de ciment, sable et agrégats.</li>
-        <li>📏 <strong>Saisie d'Avancement Réalisé</strong> : Renseignement des volumes et métrés exécutés sur chaque tâche.</li>
-        <li>📷 <strong>Journal de Chantier & Photos</strong> : Remontée des constats météo, blocages et incidents en direct.</li>
-      </ul>
+    <!-- Grille KPI Chantier Responsive -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl p-5 shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Effectif sur Site</div>
+        <div class="text-2xl sm:text-3xl font-black text-white">28 Ouvriers</div>
+        <div class="text-xs text-emerald-400 mt-2 flex items-center gap-1">
+          <span>✓</span>
+          <span>Pointage matinal validé</span>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl p-5 shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Béton Coulé (Jour)</div>
+        <div class="text-2xl sm:text-3xl font-black text-white">45 m³</div>
+        <div class="text-xs text-slate-400 mt-2">
+          Dalle supérieure niveau 2
+        </div>
+      </div>
+
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl p-5 shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Ciment Consommé</div>
+        <div class="text-2xl sm:text-3xl font-black text-btp-400">120 Sacs</div>
+        <div class="text-xs text-slate-400 mt-2">
+          CPJ 42.5 • Stock : 350 sacs
+        </div>
+      </div>
+
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl p-5 shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Ferraillage Posé</div>
+        <div class="text-2xl sm:text-3xl font-black text-emerald-400">3.8 Tonnes</div>
+        <div class="text-xs text-slate-400 mt-2">
+          Aciers HA FeE500
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Rapides Terrain (Touch-friendly pour smartphone) -->
+    <div class="bg-dark-800 border border-dark-600 rounded-2xl p-6 shadow-xl">
+      <h3 class="text-base sm:text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <span>📱</span>
+        <span>Actions Rapides de Terrain</span>
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <button class="p-4 rounded-xl bg-dark-900 border border-dark-600 hover:border-emerald-500/50 hover:bg-dark-700 text-left transition-all group">
+          <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">⏱️</div>
+          <div class="font-bold text-white text-sm">Pointage Équipe</div>
+          <div class="text-xs text-slate-400 mt-1">Présences, retards & heures sup</div>
+        </button>
+
+        <button class="p-4 rounded-xl bg-dark-900 border border-dark-600 hover:border-amber-500/50 hover:bg-dark-700 text-left transition-all group">
+          <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">🧱</div>
+          <div class="font-bold text-white text-sm">Sortie Matériaux</div>
+          <div class="text-xs text-slate-400 mt-1">Ciment, fer, sable, gravier</div>
+        </button>
+
+        <button class="p-4 rounded-xl bg-dark-900 border border-dark-600 hover:border-blue-500/50 hover:bg-dark-700 text-left transition-all group">
+          <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">📏</div>
+          <div class="font-bold text-white text-sm">Saisie Métrés</div>
+          <div class="text-xs text-slate-400 mt-1">Volumes et surfaces exécutés</div>
+        </button>
+
+        <button class="p-4 rounded-xl bg-dark-900 border border-dark-600 hover:border-purple-500/50 hover:bg-dark-700 text-left transition-all group">
+          <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">📸</div>
+          <div class="font-bold text-white text-sm">Journal & Photos</div>
+          <div class="text-xs text-slate-400 mt-1">Rapport météo et constats</div>
+        </button>
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.role-view { display: flex; flex-direction: column; gap: 2rem; }
-.role-header h2 { font-size: 1.8rem; color: #fff; margin: 0.4rem 0; }
-.role-header p { color: var(--text-secondary); }
-.badge-role { display: inline-block; padding: 0.3rem 0.8rem; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 9999px; font-size: 0.75rem; font-weight: 700; }
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
-.kpi-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
-.kpi-title { font-size: 0.85rem; color: var(--text-secondary); }
-.kpi-value { font-size: 1.5rem; font-weight: 800; color: #fff; }
-.kpi-sub { font-size: 0.8rem; color: var(--text-muted); }
-.kpi-sub.success { color: var(--status-success); }
-.info-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 2rem; }
-.info-box h3 { color: #fff; margin-bottom: 1.2rem; font-size: 1.1rem; }
-.info-box ul { display: flex; flex-direction: column; gap: 0.9rem; list-style: none; color: var(--text-secondary); }
-.info-box li strong { color: #fff; }
-</style>

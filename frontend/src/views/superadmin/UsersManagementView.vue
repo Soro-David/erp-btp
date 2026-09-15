@@ -1,147 +1,166 @@
 <template>
-  <div class="management-container">
-    <div class="view-header">
+  <div class="space-y-6">
+    <!-- En-tête de la vue -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-dark-800/80 p-5 rounded-2xl border border-dark-600">
       <div>
-        <h2>👑 Espace SuperAdmin — Gestion des Utilisateurs</h2>
-        <p>Création, attribution des rôles (Owner, Director, Manager, Worker) et contrôle des accès</p>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold mb-1">
+          <span>👑</span>
+          <span>ADMINISTRATION CENTRALE</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Gestion des Utilisateurs & Rôles</h2>
+        <p class="text-slate-400 text-xs sm:text-sm mt-0.5">Créez et configurez les accès des profils Owner, Director, Manager et Worker</p>
       </div>
-      <button class="btn-create" @click="showModal = true">
+      <button 
+        @click="showModal = true"
+        class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-btp-500 to-btp-600 hover:from-btp-400 hover:to-btp-500 text-slate-950 font-bold text-sm shadow-md shadow-btp-500/20 flex items-center justify-center gap-2 transition-all"
+      >
         <span>➕</span>
         <span>Nouvel Utilisateur</span>
       </button>
     </div>
 
-    <!-- Bannière rôle & informations -->
-    <div class="stats-bar">
-      <div class="stat-card">
-        <span class="stat-val">{{ users.length }}</span>
-        <span class="stat-lbl">Utilisateurs au total</span>
+    <!-- Barre d'indicateurs KPI Responsive -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+      <div class="bg-dark-800 border border-dark-600 rounded-xl p-3.5 flex flex-col">
+        <span class="text-2xl font-black text-white">{{ users.length }}</span>
+        <span class="text-xs text-slate-400">Total Utilisateurs</span>
       </div>
-      <div class="stat-card">
-        <span class="stat-val">{{ users.filter(u => u.is_active).length }}</span>
-        <span class="stat-lbl">Comptes Actifs</span>
+      <div class="bg-dark-800 border border-dark-600 rounded-xl p-3.5 flex flex-col">
+        <span class="text-2xl font-black text-emerald-400">{{ users.filter(u => u.is_active).length }}</span>
+        <span class="text-xs text-slate-400">Comptes Actifs</span>
       </div>
-      <div class="stat-card">
-        <span class="stat-val">{{ users.filter(u => u.role === 'OWNER').length }}</span>
-        <span class="stat-lbl">Owners</span>
+      <div class="bg-dark-800 border border-dark-600 rounded-xl p-3.5 flex flex-col">
+        <span class="text-2xl font-black text-amber-400">{{ users.filter(u => u.role === 'OWNER').length }}</span>
+        <span class="text-xs text-slate-400">Owners</span>
       </div>
-      <div class="stat-card">
-        <span class="stat-val">{{ users.filter(u => u.role === 'DIRECTOR').length }}</span>
-        <span class="stat-lbl">Directors</span>
+      <div class="bg-dark-800 border border-dark-600 rounded-xl p-3.5 flex flex-col">
+        <span class="text-2xl font-black text-purple-400">{{ users.filter(u => u.role === 'DIRECTOR').length }}</span>
+        <span class="text-xs text-slate-400">Directors</span>
       </div>
-      <div class="stat-card">
-        <span class="stat-val">{{ users.filter(u => u.role === 'MANAGER').length }}</span>
-        <span class="stat-lbl">Managers</span>
+      <div class="bg-dark-800 border border-dark-600 rounded-xl p-3.5 flex flex-col">
+        <span class="text-2xl font-black text-blue-400">{{ users.filter(u => u.role === 'MANAGER').length }}</span>
+        <span class="text-xs text-slate-400">Managers</span>
       </div>
-      <div class="stat-card">
-        <span class="stat-val">{{ users.filter(u => u.role === 'WORKER').length }}</span>
-        <span class="stat-lbl">Workers</span>
+      <div class="bg-dark-800 border border-dark-600 rounded-xl p-3.5 flex flex-col">
+        <span class="text-2xl font-black text-emerald-400">{{ users.filter(u => u.role === 'WORKER').length }}</span>
+        <span class="text-xs text-slate-400">Workers</span>
       </div>
     </div>
 
-    <!-- Tableau des utilisateurs -->
-    <div class="table-card">
-      <div v-if="loading" class="loading-state">
-        Chargement des utilisateurs en cours...
+    <!-- Tableau Responsive des Utilisateurs -->
+    <div class="bg-dark-800 border border-dark-600 rounded-2xl overflow-hidden shadow-xl">
+      <div v-if="loading" class="p-8 text-center text-slate-400 text-sm">
+        Chargement des données en cours...
       </div>
-      <table v-else class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nom & Prénom</th>
-            <th>Email</th>
-            <th>Téléphone</th>
-            <th>Rôle</th>
-            <th>Statut</th>
-            <th>Date Création</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="user in users" :key="user.id">
-            <td>#{{ user.id }}</td>
-            <td class="font-bold">{{ user.first_name }} {{ user.last_name }}</td>
-            <td class="code">{{ user.email }}</td>
-            <td>{{ user.phone || '—' }}</td>
-            <td>
-              <span class="role-badge" :class="'role-' + user.role.toLowerCase()">
-                {{ user.role }}
-              </span>
-            </td>
-            <td>
-              <span class="status-badge" :class="user.is_active ? 'status-active' : 'status-inactive'">
-                {{ user.is_active ? 'Actif' : 'Désactivé' }}
-              </span>
-            </td>
-            <td>{{ formatDate(user.created_at) }}</td>
-            <td>
-              <button 
-                class="btn-action btn-danger" 
-                title="Supprimer" 
-                :disabled="user.role === 'SUPER_ADMIN'"
-                @click="deleteUser(user.id)"
-              >
-                🗑️
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-else class="overflow-x-auto">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead class="bg-dark-900/80 border-b border-dark-600 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <tr>
+              <th class="px-5 py-3.5">ID</th>
+              <th class="px-5 py-3.5">Nom & Prénom</th>
+              <th class="px-5 py-3.5">Email</th>
+              <th class="px-5 py-3.5">Téléphone</th>
+              <th class="px-5 py-3.5">Rôle</th>
+              <th class="px-5 py-3.5">Statut</th>
+              <th class="px-5 py-3.5">Date Création</th>
+              <th class="px-5 py-3.5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-dark-600/50">
+            <tr v-for="user in users" :key="user.id" class="hover:bg-slate-800/40 transition-colors">
+              <td class="px-5 py-3.5 text-slate-400">#{{ user.id }}</td>
+              <td class="px-5 py-3.5 font-bold text-white">{{ user.first_name }} {{ user.last_name }}</td>
+              <td class="px-5 py-3.5 font-mono text-cyan-400 text-xs">{{ user.email }}</td>
+              <td class="px-5 py-3.5 text-slate-300">{{ user.phone || '—' }}</td>
+              <td class="px-5 py-3.5">
+                <span class="inline-block px-2.5 py-1 rounded-md text-xs font-bold" :class="getRoleBadgeClass(user.role)">
+                  {{ user.role }}
+                </span>
+              </td>
+              <td class="px-5 py-3.5">
+                <span 
+                  class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium"
+                  :class="user.is_active ? 'bg-emerald-500/15 text-emerald-300' : 'bg-red-500/15 text-red-300'"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full" :class="user.is_active ? 'bg-emerald-400' : 'bg-red-400'"></span>
+                  {{ user.is_active ? 'Actif' : 'Désactivé' }}
+                </span>
+              </td>
+              <td class="px-5 py-3.5 text-slate-400 text-xs">{{ formatDate(user.created_at) }}</td>
+              <td class="px-5 py-3.5 text-right">
+                <button 
+                  @click="deleteUser(user.id)"
+                  :disabled="user.role === 'SUPER_ADMIN'"
+                  class="p-1.5 rounded-lg border border-dark-600 text-slate-400 hover:text-red-400 hover:border-red-500/50 hover:bg-red-500/10 transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+                  title="Supprimer l'utilisateur"
+                >
+                  🗑️
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Modal de création d'utilisateur -->
-    <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Créer un nouvel utilisateur BTP</h3>
-          <button class="btn-close" @click="showModal = false">✕</button>
+    <!-- Modal Responsive de création d'utilisateur -->
+    <div v-if="showModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-dark-800 border border-dark-600 rounded-2xl w-full max-w-lg p-6 sm:p-7 shadow-2xl relative">
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-dark-600">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <span>➕</span>
+            <span>Créer un profil BTP</span>
+          </h3>
+          <button @click="showModal = false" class="text-slate-400 hover:text-white text-xl p-1">✕</button>
         </div>
 
-        <form @submit.prevent="createUser" class="modal-form">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Prénom *</label>
-              <input v-model="form.first_name" required placeholder="ex: Jean" />
+        <form @submit.prevent="createUser" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Prénom *</label>
+              <input v-model="form.first_name" required placeholder="ex: Jean" class="w-full px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white text-sm focus:outline-none focus:border-btp-500" />
             </div>
-            <div class="form-group">
-              <label>Nom *</label>
-              <input v-model="form.last_name" required placeholder="ex: Konan" />
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Nom *</label>
+              <input v-model="form.last_name" required placeholder="ex: Konan" class="w-full px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white text-sm focus:outline-none focus:border-btp-500" />
             </div>
           </div>
 
-          <div class="form-group">
-            <label>Adresse Email *</label>
-            <input v-model="form.email" type="email" required placeholder="ex: j.konan@btp.ci" />
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Adresse Email *</label>
+            <input v-model="form.email" type="email" required placeholder="ex: j.konan@btp.ci" class="w-full px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white text-sm focus:outline-none focus:border-btp-500" />
           </div>
 
-          <div class="form-group">
-            <label>Téléphone (optionnel)</label>
-            <input v-model="form.phone" placeholder="+225 07 00 00 00 00" />
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Téléphone</label>
+            <input v-model="form.phone" placeholder="+225 07 00 00 00 00" class="w-full px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white text-sm focus:outline-none focus:border-btp-500" />
           </div>
 
-          <div class="form-group">
-            <label>Rôle attribué *</label>
-            <select v-model="form.role" required>
-              <option value="OWNER">🏢 OWNER (Propriétaire / Direction)</option>
-              <option value="DIRECTOR">📐 DIRECTOR (Directeur Technique)</option>
-              <option value="MANAGER">📋 MANAGER (Chef de Projet / Conduite)</option>
-              <option value="WORKER">👷 WORKER (Chef de Chantier / Terrain)</option>
-              <option value="SUPER_ADMIN">👑 SUPER_ADMIN (Administrateur)</option>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Rôle Attribué *</label>
+            <select v-model="form.role" required class="w-full px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white text-sm focus:outline-none focus:border-btp-500">
+              <option value="OWNER">🏢 OWNER — Direction / Propriétaire</option>
+              <option value="DIRECTOR">📐 DIRECTOR — Direction Technique</option>
+              <option value="MANAGER">📋 MANAGER — Chef de Projet / Conduite</option>
+              <option value="WORKER">👷 WORKER — Chef de Chantier / Terrain</option>
+              <option value="SUPER_ADMIN">👑 SUPER_ADMIN — Administrateur</option>
             </select>
           </div>
 
-          <div class="form-group">
-            <label>Mot de passe temporaire *</label>
-            <input v-model="form.password" type="password" required minlength="8" placeholder="Minimum 8 caractères" />
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Mot de passe temporaire *</label>
+            <input v-model="form.password" type="password" required minlength="8" placeholder="Au moins 8 caractères" class="w-full px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white text-sm focus:outline-none focus:border-btp-500" />
           </div>
 
-          <div v-if="createError" class="alert-error">
+          <div v-if="createError" class="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-xs">
             ⚠️ {{ createError }}
           </div>
 
-          <div class="modal-actions">
-            <button type="button" class="btn-cancel" @click="showModal = false">Annuler</button>
-            <button type="submit" class="btn-submit" :disabled="creating">
+          <div class="flex justify-end gap-3 pt-3 border-t border-dark-600">
+            <button type="button" @click="showModal = false" class="px-4 py-2 rounded-lg border border-dark-600 text-slate-300 hover:bg-dark-700 text-sm">
+              Annuler
+            </button>
+            <button type="submit" :disabled="creating" class="px-5 py-2 rounded-lg bg-btp-500 hover:bg-btp-400 text-slate-950 font-bold text-sm shadow-md transition-all disabled:opacity-50">
               {{ creating ? 'Création...' : 'Créer l\'utilisateur' }}
             </button>
           </div>
@@ -177,6 +196,17 @@ const form = ref({
 function formatDate(d) {
   if (!d) return '—'
   return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
+function getRoleBadgeClass(role) {
+  switch (role) {
+    case 'SUPER_ADMIN': return 'bg-red-500/15 text-red-300 border border-red-500/30'
+    case 'OWNER': return 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+    case 'DIRECTOR': return 'bg-purple-500/15 text-purple-300 border border-purple-500/30'
+    case 'MANAGER': return 'bg-blue-500/15 text-blue-300 border border-blue-500/30'
+    case 'WORKER': return 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+    default: return 'bg-slate-700 text-slate-300'
+  }
 }
 
 async function fetchUsers() {
@@ -233,262 +263,3 @@ onMounted(() => {
   fetchUsers()
 })
 </script>
-
-<style scoped>
-.management-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.8rem;
-}
-
-.view-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.view-header h2 {
-  font-size: 1.6rem;
-  color: #fff;
-  margin-bottom: 0.3rem;
-}
-
-.view-header p {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.btn-create {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, var(--accent-btp) 0%, #d97706 100%);
-  color: #0f172a;
-  border: none;
-  padding: 0.8rem 1.4rem;
-  border-radius: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-create:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px var(--accent-btp-glow);
-}
-
-.stats-bar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1rem;
-}
-
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.stat-val {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #fff;
-}
-
-.stat-lbl {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.table-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 0.9rem;
-}
-
-.data-table th {
-  background: rgba(11, 15, 23, 0.6);
-  padding: 1rem 1.25rem;
-  color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.data-table td {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(30, 45, 74, 0.5);
-  color: var(--text-primary);
-}
-
-.data-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.font-bold {
-  font-weight: 600;
-}
-
-.code {
-  font-family: monospace;
-  color: #38bdf8;
-}
-
-.role-badge {
-  padding: 0.25rem 0.65rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.role-super_admin { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
-.role-owner { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
-.role-director { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
-.role-manager { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
-.role-worker { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
-
-.status-badge {
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.72rem;
-  font-weight: 600;
-}
-
-.status-active { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-.status-inactive { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-
-.btn-action {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  padding: 0.4rem 0.6rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.btn-action:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: #ef4444;
-}
-
-.btn-action:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.modal-content {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 520px;
-  padding: 2rem;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.modal-header h3 {
-  font-size: 1.3rem;
-  color: #fff;
-}
-
-.btn-close {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-
-.modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.form-group label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
-.form-group input, .form-group select {
-  background: #0b0f17;
-  border: 1px solid var(--border-color);
-  color: #fff;
-  padding: 0.75rem 0.9rem;
-  border-radius: 8px;
-  outline: none;
-}
-
-.form-group input:focus, .form-group select:focus {
-  border-color: var(--accent-btp);
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.btn-cancel {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  padding: 0.75rem 1.25rem;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.alert-error {
-  background: var(--status-error-bg);
-  border: 1px solid var(--status-error);
-  color: #fca5a5;
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-size: 0.85rem;
-}
-</style>

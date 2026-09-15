@@ -1,282 +1,236 @@
 <template>
-  <div class="app-shell">
-    <!-- En-tête Principal -->
-    <header class="navbar">
-      <div class="navbar-left">
-        <router-link to="/" class="brand-link">
-          <span class="brand-icon">🏗️</span>
-          <div class="brand-meta">
-            <span class="brand-name">BTP MANAGER</span>
-            <span class="brand-tagline">ERP BTP & Génie Civil</span>
-          </div>
-        </router-link>
+  <div class="min-h-screen flex flex-col bg-dark-900 text-slate-100">
+    <!-- En-tête Principal Navigation Responsive -->
+    <header class="sticky top-0 z-50 bg-dark-800/95 backdrop-blur-md border-b border-dark-600">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo & Marque -->
+          <div class="flex items-center gap-6">
+            <router-link to="/" class="flex items-center gap-3 group">
+              <span class="text-2xl p-2 bg-btp-500/10 border border-btp-500/30 rounded-xl group-hover:scale-105 transition-transform">
+                🏗️
+              </span>
+              <div class="flex flex-col">
+                <span class="text-lg font-extrabold tracking-wide bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                  BTP MANAGER
+                </span>
+                <span class="text-[10px] text-slate-400 font-medium tracking-wider uppercase">
+                  ERP BTP & Génie Civil
+                </span>
+              </div>
+            </router-link>
 
-        <!-- Liens de navigation selon le rôle connecté -->
-        <nav v-if="authStore.isAuthenticated" class="nav-links">
-          <router-link 
-            v-if="['SUPER_ADMIN', 'OWNER'].includes(authStore.userRole)" 
-            to="/superadmin/users" 
-            class="nav-item"
-          >
-            👑 Utilisateurs
-          </router-link>
-          <router-link 
-            v-if="['SUPER_ADMIN', 'OWNER'].includes(authStore.userRole)" 
-            to="/owner" 
-            class="nav-item"
-          >
-            🏢 Espace Owner
-          </router-link>
-          <router-link 
-            v-if="['SUPER_ADMIN', 'OWNER', 'DIRECTOR'].includes(authStore.userRole)" 
-            to="/director" 
-            class="nav-item"
-          >
-            📐 Espace Director
-          </router-link>
-          <router-link 
-            v-if="['SUPER_ADMIN', 'OWNER', 'DIRECTOR', 'MANAGER'].includes(authStore.userRole)" 
-            to="/manager" 
-            class="nav-item"
-          >
-            📋 Espace Manager
-          </router-link>
-          <router-link 
-            v-if="authStore.isAuthenticated" 
-            to="/worker" 
-            class="nav-item"
-          >
-            👷 Espace Worker
-          </router-link>
-        </nav>
+            <!-- Navigation Desktop -->
+            <nav v-if="authStore.isAuthenticated" class="hidden md:flex items-center gap-1 ml-4">
+              <router-link 
+                v-if="['SUPER_ADMIN', 'OWNER'].includes(authStore.userRole)" 
+                to="/superadmin/users" 
+                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                :class="$route.path === '/superadmin/users' ? 'bg-btp-500/15 text-btp-400 border border-btp-500/40' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'"
+              >
+                👑 Utilisateurs
+              </router-link>
+              <router-link 
+                v-if="['SUPER_ADMIN', 'OWNER'].includes(authStore.userRole)" 
+                to="/owner" 
+                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                :class="$route.path === '/owner' ? 'bg-btp-500/15 text-btp-400 border border-btp-500/40' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'"
+              >
+                🏢 Owner
+              </router-link>
+              <router-link 
+                v-if="['SUPER_ADMIN', 'OWNER', 'DIRECTOR'].includes(authStore.userRole)" 
+                to="/director" 
+                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                :class="$route.path === '/director' ? 'bg-btp-500/15 text-btp-400 border border-btp-500/40' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'"
+              >
+                📐 Director
+              </router-link>
+              <router-link 
+                v-if="['SUPER_ADMIN', 'OWNER', 'DIRECTOR', 'MANAGER'].includes(authStore.userRole)" 
+                to="/manager" 
+                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                :class="$route.path === '/manager' ? 'bg-btp-500/15 text-btp-400 border border-btp-500/40' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'"
+              >
+                📋 Manager
+              </router-link>
+              <router-link 
+                v-if="authStore.isAuthenticated" 
+                to="/worker" 
+                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                :class="$route.path === '/worker' ? 'bg-btp-500/15 text-btp-400 border border-btp-500/40' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'"
+              >
+                👷 Worker
+              </router-link>
+            </nav>
+          </div>
+
+          <!-- Section Profil & Actions Desktop -->
+          <div class="hidden md:flex items-center gap-4">
+            <template v-if="authStore.isAuthenticated">
+              <div class="flex items-center gap-3 bg-dark-900/60 border border-dark-600 px-3 py-1.5 rounded-full">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-btp-600 to-btp-400 text-slate-950 font-bold flex items-center justify-center text-sm shadow-md shadow-btp-500/20">
+                  {{ authStore.user?.first_name?.charAt(0) || 'U' }}
+                </div>
+                <div class="flex flex-col text-left">
+                  <span class="text-xs font-semibold text-white leading-tight">{{ authStore.userName }}</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider" :class="getRoleColor(authStore.userRole)">
+                    {{ authStore.userRole }}
+                  </span>
+                </div>
+              </div>
+              <button 
+                @click="handleLogout"
+                class="px-3 py-1.5 rounded-lg border border-dark-600 text-slate-400 hover:text-red-400 hover:border-red-500/50 hover:bg-red-500/10 text-xs font-medium transition-all flex items-center gap-1.5"
+                title="Se déconnecter"
+              >
+                <span>Déconnexion</span>
+                <span>🚪</span>
+              </button>
+            </template>
+            <template v-else>
+              <router-link 
+                to="/login"
+                class="px-4 py-2 rounded-lg bg-gradient-to-r from-btp-500 to-btp-600 text-slate-950 font-bold text-sm hover:from-btp-400 hover:to-btp-500 shadow-md shadow-btp-500/20 transition-all"
+              >
+                Se connecter
+              </router-link>
+            </template>
+          </div>
+
+          <!-- Bouton Menu Mobile (Hamburger) -->
+          <div class="flex md:hidden items-center gap-2">
+            <button 
+              @click="mobileMenuOpen = !mobileMenuOpen"
+              class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-dark-700 border border-dark-600 transition-colors"
+              aria-label="Toggle menu"
+            >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <!-- Espace utilisateur / Déconnexion -->
-      <div class="navbar-right">
+      <!-- Menu Déroulant Mobile -->
+      <div v-if="mobileMenuOpen" class="md:hidden border-b border-dark-600 bg-dark-800 px-4 pt-2 pb-4 space-y-2">
         <template v-if="authStore.isAuthenticated">
-          <div class="user-pill">
-            <div class="avatar-circle">
+          <div class="flex items-center gap-3 p-3 bg-dark-900 rounded-xl border border-dark-600 mb-3">
+            <div class="w-10 h-10 rounded-full bg-btp-500 text-slate-950 font-bold flex items-center justify-center">
               {{ authStore.user?.first_name?.charAt(0) || 'U' }}
             </div>
-            <div class="user-meta">
-              <span class="user-name">{{ authStore.userName }}</span>
-              <span class="role-tag" :class="'role-' + authStore.userRole?.toLowerCase()">
-                {{ authStore.userRole }}
-              </span>
+            <div>
+              <div class="text-sm font-bold text-white">{{ authStore.userName }}</div>
+              <div class="text-xs font-semibold" :class="getRoleColor(authStore.userRole)">{{ authStore.userRole }}</div>
             </div>
           </div>
-          <button class="btn-logout" title="Se déconnecter" @click="handleLogout">
-            <span>Déconnexion</span>
-            <span>🚪</span>
-          </button>
+
+          <div class="flex flex-col space-y-1">
+            <router-link 
+              v-if="['SUPER_ADMIN', 'OWNER'].includes(authStore.userRole)"
+              to="/superadmin/users" 
+              @click="mobileMenuOpen = false"
+              class="px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-dark-700"
+            >
+              👑 Gestion Utilisateurs
+            </router-link>
+            <router-link 
+              v-if="['SUPER_ADMIN', 'OWNER'].includes(authStore.userRole)"
+              to="/owner" 
+              @click="mobileMenuOpen = false"
+              class="px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-dark-700"
+            >
+              🏢 Espace Owner
+            </router-link>
+            <router-link 
+              v-if="['SUPER_ADMIN', 'OWNER', 'DIRECTOR'].includes(authStore.userRole)"
+              to="/director" 
+              @click="mobileMenuOpen = false"
+              class="px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-dark-700"
+            >
+              📐 Espace Director
+            </router-link>
+            <router-link 
+              v-if="['SUPER_ADMIN', 'OWNER', 'DIRECTOR', 'MANAGER'].includes(authStore.userRole)"
+              to="/manager" 
+              @click="mobileMenuOpen = false"
+              class="px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-dark-700"
+            >
+              📋 Espace Manager
+            </router-link>
+            <router-link 
+              to="/worker" 
+              @click="mobileMenuOpen = false"
+              class="px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-dark-700"
+            >
+              👷 Espace Worker
+            </router-link>
+          </div>
+
+          <div class="pt-3 border-t border-dark-700">
+            <button 
+              @click="handleLogout(); mobileMenuOpen = false"
+              class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 flex items-center justify-between"
+            >
+              <span>Se déconnecter</span>
+              <span>🚪</span>
+            </button>
+          </div>
         </template>
         <template v-else>
-          <router-link to="/login" class="btn-login-nav">
+          <router-link 
+            to="/login"
+            @click="mobileMenuOpen = false"
+            class="block text-center py-2.5 rounded-lg bg-btp-500 text-slate-950 font-bold text-sm"
+          >
             Se connecter
           </router-link>
         </template>
       </div>
     </header>
 
-    <!-- Vue active -->
-    <main class="main-wrapper">
+    <!-- Zone de Contenu Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <router-view />
     </main>
+
+    <!-- Pied de Page Responsive -->
+    <footer class="border-t border-dark-600 bg-dark-900/60 py-4 text-center text-xs text-slate-500">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <span>BTP MANAGER © 2026 — Système ERP BTP & Travaux Publics</span>
+        <span class="flex items-center gap-1.5">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+          Tailwind CSS v3 • Vue 3 • FastAPI • PostgreSQL
+        </span>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const mobileMenuOpen = ref(false)
+
+function getRoleColor(role) {
+  switch (role) {
+    case 'SUPER_ADMIN': return 'text-red-400'
+    case 'OWNER': return 'text-amber-400'
+    case 'DIRECTOR': return 'text-purple-400'
+    case 'MANAGER': return 'text-blue-400'
+    case 'WORKER': return 'text-emerald-400'
+    default: return 'text-slate-400'
+  }
+}
 
 function handleLogout() {
   authStore.logout()
   router.push('/login')
 }
 </script>
-
-<style scoped>
-.app-shell {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: rgba(19, 27, 46, 0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.navbar-left {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.brand-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-}
-
-.brand-icon {
-  font-size: 1.8rem;
-  padding: 0.4rem;
-  background: rgba(245, 158, 11, 0.12);
-  border-radius: 10px;
-  border: 1px solid var(--accent-btp-glow);
-}
-
-.brand-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-name {
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.brand-tagline {
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.nav-item {
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 0.5rem 0.8rem;
-  border-radius: 8px;
-  transition: all 0.15s ease;
-}
-
-.nav-item:hover, .nav-item.router-link-active {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.07);
-}
-
-.nav-item.router-link-active {
-  color: var(--accent-btp);
-  border: 1px solid var(--accent-btp-glow);
-}
-
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.user-pill {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: rgba(11, 15, 23, 0.6);
-  border: 1px solid var(--border-color);
-  padding: 0.35rem 0.85rem 0.35rem 0.4rem;
-  border-radius: 9999px;
-}
-
-.avatar-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-btp) 0%, #d97706 100%);
-  color: #0f172a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.user-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-name {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-.role-tag {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.role-super_admin { color: #f87171; }
-.role-owner { color: #fbbf24; }
-.role-director { color: #c084fc; }
-.role-manager { color: #60a5fa; }
-.role-worker { color: #34d399; }
-
-.btn-logout {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  padding: 0.45rem 0.85rem;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.82rem;
-  transition: all 0.15s ease;
-}
-
-.btn-logout:hover {
-  border-color: #ef4444;
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-}
-
-.btn-login-nav {
-  background: linear-gradient(135deg, var(--accent-btp) 0%, #d97706 100%);
-  color: #0f172a;
-  text-decoration: none;
-  font-weight: 700;
-  padding: 0.5rem 1.1rem;
-  border-radius: 8px;
-  font-size: 0.85rem;
-}
-
-.main-wrapper {
-  flex: 1;
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-@media (max-width: 900px) {
-  .navbar { flex-direction: column; gap: 1rem; align-items: flex-start; }
-  .navbar-left { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
-  .nav-links { flex-wrap: wrap; }
-}
-</style>
