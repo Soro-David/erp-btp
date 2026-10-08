@@ -8,25 +8,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        btp: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
+        brand: {
+          sidebar: '#0f294a',       // Bleu profond BTP pour la Sidebar
+          'sidebar-hover': '#163b66',
+          'sidebar-active': '#1d4ed8', // Bleu royal surbrillance active
+          nav: '#047857',           // Vert professionnel pour la Navbar
+          'nav-hover': '#065f46',
+          primary: '#1d4ed8',       // Bleu boutons principaux
+          'primary-hover': '#1e40af',
+          secondary: '#64748b',     // Gris boutons secondaires
+          'secondary-hover': '#475569',
+          'secondary-light': '#f1f5f9',
+          bg: '#f8fafc',            // Fond blanc / gris très clair
         },
-        dark: {
-          900: '#0b0f17',
-          800: '#131b2e',
-          700: '#1a243d',
-          600: '#1e2d4a',
-          500: '#2a3d66',
-        }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

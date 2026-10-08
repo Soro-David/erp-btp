@@ -1,6 +1,6 @@
 import enum
 from typing import Optional
-from sqlalchemy import String, Boolean, Enum
+from sqlalchemy import String, Boolean, Enum, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from app.models.base import Base, TimestampMixin
 
@@ -31,6 +31,9 @@ class User(Base, TimestampMixin):
     )
     
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    otp_code: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
+    company_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    company_logo: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     def __repr__(self) -> str:
         return f"<User id={self.id} email='{self.email}' role='{self.role.value}'>"

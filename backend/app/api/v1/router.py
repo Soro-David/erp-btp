@@ -5,6 +5,9 @@ from app.api.v1.owner.routes import router as owner_router
 from app.api.v1.director.routes import router as director_router
 from app.api.v1.manager.routes import router as manager_router
 from app.api.v1.worker.routes import router as worker_router
+from app.api.v1.chantiers.routes import router as chantiers_router
+from app.api.v1.chantiers.task_routes import router as task_routes_router
+from app.api.v1.purchases.routes import router as purchases_router
 
 api_router = APIRouter()
 
@@ -14,3 +17,6 @@ api_router.include_router(owner_router)
 api_router.include_router(director_router)
 api_router.include_router(manager_router)
 api_router.include_router(worker_router)
+api_router.include_router(chantiers_router)
+api_router.include_router(task_routes_router)
+api_router.include_router(purchases_router)

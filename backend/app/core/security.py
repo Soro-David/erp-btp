@@ -54,3 +54,33 @@ def decode_access_token(token: str) -> Optional[dict]:
         return payload
     except jwt.PyJWTError:
         return None
+
+
+def create_invitation_token(email: str, user_id: int) -> str:
+    """Génère un jeton JWT d'invitation sécurisé pour finaliser le compte."""
+    now = datetime.now(timezone.utc)
+    expire = now + timedelta(hours=settings.INVITATION_TOKEN_EXPIRE_HOURS)
+    payload = {
+        "sub": str(user_id),
+        "email": email,
+        "type": "invitation",
+        "iat": now,
+        "exp": expire,
+    }
+    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+def decode_invitation_token(token: str) -> Optional[dict]:
+    """Décode et valide un jeton JWT d'invitation."""
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+        )
+        if payload.get("type") != "invitation":
+            return None
+        return payload
+    except jwt.PyJWTError:
+        return None
+

@@ -12,7 +12,7 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+from app.models.base import Base
 
 
 def get_db() -> Generator[Session, None, None]:

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.api.v1.deps import require_roles
 from app.models.user import User, UserRole
-from app.schemas.user import UserCreate, UserUpdate, UserResponse
+from app.schemas.user import UserCreate, UserUpdate, UserResponse, OwnerInviteRequest, OwnerInviteResponse
 from app.services.user import UserService
 
 router = APIRouter(
@@ -25,6 +25,42 @@ def list_users(
     """Lister les utilisateurs avec pagination et filtrage par rôle/statut."""
     user_service = UserService(db)
     return user_service.list_users(skip=skip, limit=limit, role=role, is_active=is_active)
+
+
+@router.post("/invite-owner", response_model=OwnerInviteResponse, status_code=status.HTTP_201_CREATED, summary="Inviter un nouveau profil Owner par email")
+def invite_owner(
+    invite_data: OwnerInviteRequest,
+    db: Session = Depends(get_db),
+):
+    """
+    Invite un profil Propriétaire (Owner) d'entreprise BTP.
+    Crée le compte en attente (is_active=False) et lui envoie un email sécurisé
+    pour lui permettre de renseigner son mot de passe et finaliser ses informations.
+    """
+    user_service = UserService(db)
+    user, link, otp = user_service.invite_owner(invite_data)
+    return {
+        "user": user,
+        "invitation_link": link,
+        "otp_code": otp,
+        "message": f"Invitation envoyée avec succès à {user.email}.",
+    }
+
+
+@router.post("/users/{user_id}/resend-invitation", response_model=OwnerInviteResponse, summary="Renvoyer l'email d'invitation")
+def resend_invitation(
+    user_id: int,
+    db: Session = Depends(get_db),
+):
+    """Renvoie l'email d'invitation avec un nouveau jeton sécurisé et code OTP."""
+    user_service = UserService(db)
+    user, link, otp = user_service.resend_invitation(user_id)
+    return {
+        "user": user,
+        "invitation_link": link,
+        "otp_code": otp,
+        "message": f"Nouvelle invitation envoyée avec succès à {user.email}.",
+    }
 
 
 @router.post("/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED, summary="Créer un nouvel utilisateur")

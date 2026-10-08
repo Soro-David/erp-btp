@@ -32,6 +32,8 @@ services:
       dockerfile: Dockerfile
     container_name: btp_backend_api
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-btp_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-btp_password_dev_2026}
